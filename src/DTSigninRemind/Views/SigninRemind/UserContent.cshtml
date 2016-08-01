@@ -1,0 +1,178 @@
+﻿@{
+    Layout = "_LayoutDT";
+}
+<script>
+    $.ajax({
+        url: "/SigninRemind/GetUserContent?userid=@ViewBag.getuserid",
+        async: true,
+        type: "GET",
+        contentType: "application/json",
+        success: function (data, status, xhr) {
+            if (data[0].avatar == null)
+            {
+                document.getElementById("avatar").src = "//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg";
+            }
+            else
+            {
+                document.getElementById("avatar").src = data[0].avatar + "_250x250q60.jpg";
+            }
+            document.getElementById("id").textContent = data[0].id;
+            document.getElementById("userid").textContent = data[0].userid;
+            document.getElementById("name").textContent = data[0].name;
+            document.getElementById("position").textContent = data[0].position;
+            document.getElementById("is_sys").textContent = data[0].is_sys;
+            document.getElementById("sys_level").textContent = data[0].sys_level;
+            document.getElementById("mobile").textContent = data[0].mobile;
+            document.getElementById("isAdmin").textContent = data[0].isAdmin;
+            document.getElementById("isBoss").textContent = data[0].isBoss;
+            document.getElementById("remindMode").textContent = data[0].remindMode;
+            document.getElementById("workTime").textContent = data[0].workTime;
+            document.getElementById("_WorkRemind").textContent = data[0]._WorkRemind;
+            document.getElementById("offTime").textContent = data[0].offTime;
+            document.getElementById("_OffRemind").textContent = data[0]._OffRemind;
+            document.getElementById("isEnable").textContent = data[0].isEnable;
+            document.getElementById("regDateTime").textContent = data[0].regDateTime;
+        }
+    });
+    $.ajax({
+        url: "/SigninRemind/GetUserContentUrl",
+        async: true,
+        type: "GET",
+        contentType: "application/json",
+        success: function (data, status, xhr) {
+            document.getElementById("getUserContentUrl").href = data;
+        }
+    });
+</script>
+<div class="page" id="router7">
+    <div class="content">
+        <div class="content-block-title">个人信息</div>
+        <div class="card demo-card-header-pic">
+            <div valign="bottom" class="card-header color-white no-border no-padding">
+                <img id="avatar" class="card-cover" src="" alt="">
+            </div>
+            <div class="card-content">
+                <div class="card-content-inner">
+                    <div class="list-block">
+                        <ul>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">id</div>
+                                        <div class="item-after" id="id"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">Userid</div>
+                                        <div class="item-after" id="userid"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">姓名</div>
+                                    <div class="item-after" id="name"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">职位</div>
+                                    <div class="item-after" id="position"></div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">is_sys</div>
+                                        <div class="item-after" id="is_sys"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">sys_level</div>
+                                        <div class="item-after" id="sys_level"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">手机</div>
+                                        <div class="item-after" id="mobile"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">IsAdmin</div>
+                                        <div class="item-after" id="isAdmin"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li hidden>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">IsBoos</div>
+                                        <div class="item-after" id="isBoss"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">推送方式</div>
+                                    <div class="item-after" id="remindMode"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">上班时间</div>
+                                    <div class="item-after" id="workTime"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">上班提醒</div>
+                                    <div class="item-after" id="_WorkRemind"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">下班时间</div>
+                                    <div class="item-after" id="offTime"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">下班提醒</div>
+                                    <div class="item-after" id="_OffRemind"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">是否启用</div>
+                                    <div class="item-after" id="isEnable"></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">注册时间</div>
+                                    <div class="item-after" id="regDateTime"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="#"></a>
+                <a id="getUserContentUrl" href="#" class="button button-big button-fill button-success external">回到应用</a>
+            </div>
+        </div>
+    </div>
+</div>

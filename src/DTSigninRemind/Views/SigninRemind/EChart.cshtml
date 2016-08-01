@@ -1,0 +1,153 @@
+﻿@{
+    Layout = "_LayoutDT";
+}
+<link href="~/css/simple-line-icons.min.css" rel="stylesheet" type="text/css">
+<div class="page" id="router4">
+    <div class="content pull-to-refresh-content pull-to-refresh-echart" data-ptr-distance="44">
+        <!-- 默认的下拉刷新层 -->
+        <div class="pull-to-refresh-layer">
+            <div class="preloader"></div>
+            <div class="pull-to-refresh-arrow"></div>
+        </div>
+        <div class="content-block-title">汇总统计</div>
+        <div class="list-block">
+            <ul>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-user"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">注册人数</div>
+                        <div class="item-after"><a href="/SigninRemind/StatisContent"><span class="badge badge-success"  id="totalNumber">@ViewData["TotalNumber"]</span></a></div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-smile-o"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">启用人数</div>
+                        <div class="item-after"><span class="badge badge-success" id="runPush">@ViewData["RunPush"]</span></div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-frown-o"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">停用人数</div>
+                        <div class="item-after"><span class="badge badge-default" id="stopPush">@ViewData["StopPush"]</span></div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-check"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">启用应用人数</div>
+                        <div class="item-after"><span class="badge badge-success" id="enableApp">@ViewData["EnableApp"]</span></div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-check"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">启用短信人数</div>
+                        <div class="item-after"><span class="badge badge-success" id="enableMsg">@ViewData["EnableMsg"]</span></div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-commenting"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">推送消息数</div>
+                        <div class="item-after">
+                            <span class="badge badge-success" id="totalPushMsg">@ViewData["TotalPushMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-commenting"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">推送上班消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-success" id="pushWorkMsg">@ViewData["PushWorkMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-commenting"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">推送下班消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-success" id="pushOffMsg">@ViewData["PushOffMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-block-title">今日统计</div>
+        <div class="list-block">
+            <ul>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">今日已推送消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-danger" id="todayPushMsg">@ViewData["TodayPushMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">应用内消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-danger" id="todayPushAppMsg">@ViewData["TodayPushAppMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">短信消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-danger" id="todayPushSmsMsg">@ViewData["TodayPushSmsMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-calendar"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">最新推送</div>
+                        <div class="item-after" id="recentPush">
+                            @ViewData["RecentPush"]
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-block-title">昨日统计</div>
+        <div class="list-block">
+            <ul>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send-o"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">昨日已推送消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-warning" id="yesterdayPushMsg">@ViewData["YesterdayPushMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send-o"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">应用内消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-warning" id="yesterdayPushAppMsg">@ViewData["YesterdayPushAppMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="item-media"><i class="fa fa-send-o"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title">短信消息</div>
+                        <div class="item-after">
+                            <span class="badge badge-warning" id="yesterdayPushSmsMsg">@ViewData["YesterdayPushSmsMsg"]</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

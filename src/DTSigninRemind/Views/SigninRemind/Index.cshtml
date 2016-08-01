@@ -1,0 +1,447 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DTSigninRemind.Models.SigninRemind
+@{
+    Layout = "_LayoutDT";
+}
+
+
+<div class="page page-current" id="router1">
+    <div class="content">
+
+        <script>
+            $.ajax({
+                url: "/SigninRemind/GetDtConfig",
+                async: true,
+                type: "GET",
+                contentType: "application/json",
+                success: function (data, status, xhr) {
+                    document.getElementById("corpName").textContent = data.corpName;
+                    dd.config({
+                        agentId: data.agentId,
+                        corpId: data.corpId,
+                        timeStamp: data.timeStamp,
+                        nonceStr: data.nonceStr,
+                        signature: data.signature,
+                        debug: true,
+                        jsApiList: ['runtime.info',
+                    'device.notification.confirm',
+                    'device.notification.alert',
+                    'biz.navigation.close',
+                    'biz.navigation.setIcon',
+                    'biz.navigation.setTitle',
+                    'biz.navigation.setRight'
+                        ]
+                    });
+                    dd.ready(function () {
+                        //禁用下拉刷新
+                        //设置导航栏标题
+                        dd.biz.navigation.setTitle({
+                            title: '签到提醒',
+                            onSuccess: function (result) {
+                            },
+                            onFail: function (err) { }
+                        });
+                        //设置右侧导航
+                        dd.biz.navigation.setRight({
+                            show: false,//控制按钮显示， true 显示， false 隐藏， 默认true
+                            control: false,//是否控制点击事件，true 控制，false 不控制， 默认false
+                            text: '',//控制显示文本，空字符串表示显示默认文本
+                            onSuccess: function (result) {
+                                //如果control为true，则onSuccess将在发生按钮点击事件被回调
+                                /*
+                                {}
+                                */
+                            },
+                            onFail: function (err) { }
+                        });
+
+                        //设置导航问号图标
+                        dd.biz.navigation.setIcon({
+                            showIcon: true,//是否显示icon
+                            iconIndex: 1,//显示的iconIndex,如上图
+                            onSuccess: function (result) {
+                                $.router.load("/SigninRemind/Help?id=" + data.agentId, true);
+                            },
+                            onFail: function (err) {
+                                //jsapi调用失败将会回调此函数
+                                $.alert(JSON.stringify(err));
+                            }
+                        });
+
+                        //获取免登授权码
+                        dd.runtime.permission.requestAuthCode({
+                            corpId: data.corpId,
+                            //corpId: "'"+_corpId+"'",
+                            onSuccess: function (info) {
+
+                                $.ajax({
+                                    url: "/SigninRemind/userinfo?code=" + info.code,
+                                    type: "GET",
+                                    contentType: "application/json",
+                                    success: function (data, status, xhr) {
+                                        var info = JSON.parse(data);
+                                        if (info.errcode == 0) {
+                                            document.getElementById("userid").value = info.userid;
+                                            document.getElementById("deviceId").value = info.deviceId;
+                                            document.getElementById("is_sys").checked = info.is_sys;
+                                            document.getElementById("sys_level").value = info.sys_level;
+                                            if (info.is_sys)
+                                            {
+                                                document.getElementById("panel-setting").className = "tab-item open-panel";
+                                                document.getElementById("tongji1").href = "/SigninRemind/EChart";
+                                            }
+                                            else
+                                            {
+                                                document.getElementById("panel-setting").className = "tab-item";
+                                                document.getElementById("tongji1").href = "#";
+                                            }
+                                            $.ajax({
+                                                url: "/SigninRemind/GetUserInfoDep?userid=" + info.userid,
+                                                type: "GET",
+                                                contentType: "application/json",
+                                                success: function (data, status, xhr) {
+                                                    var info1 = JSON.parse(data);
+                                                    if (info1.errcode == 0) {
+
+                                                        document.getElementById("name").value = info1.name;
+                                                        document.getElementById("avatar").value = info1.avatar;
+                                                        document.getElementById("isAdmin").checked = info1.isAdmin;
+                                                        document.getElementById("isBoss").checked = info1.isBoss;
+                                                        document.getElementById("mobile").value = info1.mobile;
+                                                        document.getElementById("position").value = info1.position;
+                                                        document.getElementById("department").value = info1.department;
+                                                        document.getElementById("isLeaderInDepts").value = info1.isLeaderInDepts;
+                                                    }
+                                                    else { }
+                                                },
+                                                error: function (xhr, errorType, error) { }
+                                            });
+                                            $.ajax({
+                                                url: "/SigninRemind/GetSigninRemind?userid=" + info.userid,
+                                                type: "GET",
+                                                contentType: "application/json",
+                                                success: function (data, status, xhr) {
+
+                                                    if (data != null) {
+
+                                                        document.getElementById("name").value = data[0].name;
+                                                        document.getElementById("workTime").value = data[0].workTime;
+                                                        document.getElementById("offTime").value = data[0].offTime;
+                                                        switch (data[0].remindMode) {
+                                                            case "App":
+                                                                showApp();
+                                                                break;
+                                                            case "Msg":
+                                                                showMsg();
+                                                                break;
+                                                        };
+                                                        document.getElementById("picker1").value = data[0]._WorkRemind;
+                                                        document.getElementById("picker2").value = data[0]._OffRemind;
+                                                        switch (data[0].isEnable) {
+                                                            case true:
+                                                                document.getElementById("isEnable").setAttribute("checked", null);
+
+                                                                break;
+                                                            case false:
+                                                                document.getElementById("isEnable").removeAttribute("checked");
+
+                                                                break;
+                                                        }
+                                                    }
+                                                },
+                                                error: function (xhr, errorType, error) {
+                                                    $.alert(JSON.stringify(error));
+                                                }
+                                            });
+                                        }
+                                        else {
+
+
+                                        }
+
+                                    },
+                                    error: function (xhr, errorType, error) {
+
+                                        $.alert(JSON.stringify(error));
+                                    }
+                                });
+
+                            },
+                            onFail: function (err) {
+                                $.alert(JSON.stringify(err));
+                            }
+                        });
+                    });
+
+                    dd.error(function (err) {
+                        $.alert(JSON.stringify(err));
+                    });
+                },
+                error: function (xhr, type) {
+                    alert('sssssss');
+                }
+            });
+
+        </script>
+
+        <form asp-action="Create" id="form" class="form-horizontal" role="form" method="post">
+            <div class="card">
+                <div class="card-header"><span>成功是用心做好每一件事之后的水到渠成</span></div>
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <div class="list-block">
+                            <ul>
+                                <!-- Text inputs -->
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">userid</div>
+                                            <div class="item-input">
+                                                <input asp-for="Userid" type="text" placeholder="" id="userid" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">avatar</div>
+                                            <div class="item-input">
+                                                <input asp-for="Avatar" type="text" placeholder="" id="avatar" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">deviceId</div>
+                                            <div class="item-input">
+                                                <input asp-for="DeviceId" type="text" placeholder="" id="deviceId" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">isAdmin</div>
+                                            <div class="item-input">
+                                                <input asp-for="IsAdmin" type="checkbox" placeholder="" id="isAdmin" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">isBoss</div>
+                                            <div class="item-input">
+                                                <input asp-for="IsBoss" type="checkbox" placeholder="" id="isBoss" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">is_sys</div>
+                                            <div class="item-input">
+                                                <input asp-for="Is_sys" type="checkbox" placeholder="" id="is_sys" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">mobile</div>
+                                            <div class="item-input">
+                                                <input asp-for="Mobile" type="text" placeholder="" id="mobile" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">sys_level</div>
+                                            <div class="item-input">
+                                                <input asp-for="Sys_level" type="text" placeholder="" id="sys_level" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">职位</div>
+                                            <div class="item-input">
+                                                <input asp-for="Position" type="text" placeholder="职位" id="position" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">所属部门</div>
+                                            <div class="item-input">
+                                                <input asp-for="Department" type="text" placeholder="" id="department" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li hidden>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">是否对应部门主管</div>
+                                            <div class="item-input">
+                                                <input asp-for="IsLeaderInDepts" type="text" placeholder="" id="isLeaderInDepts" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">姓名</div>
+                                            <div class="item-input">
+                                                <input asp-for="Name" type="text" placeholder="" id="name" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">提醒方式</div>
+                                            <div class="item-input">
+                                                <p class="buttons-row"><a onclick="showApp();" class="button button-round" id="button1">应用内</a><a onclick="showMsg();" class="button button-round" id="button2">短信</a></p>
+                                                <input asp-for="RemindMode" type="text" id="remindmode" style="display:none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">上班时间</div>
+                                            <div class="item-input">
+                                                <input asp-for="WorkTime" type="time" placeholder="" id="workTime" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">上班提前</div>
+                                            <div class="item-input">
+                                                <input asp-for="_WorkRemind" type="text" id="picker1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">下班时间</div>
+                                            <div class="item-input">
+                                                <input asp-for="OffTime" type="time" placeholder="" id="offTime" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">下班延迟</div>
+                                            <div class="item-input">
+                                                <input asp-for="_OffRemind" type="text" id="picker2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- Switch (Checkbox) -->
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">启用</div>
+                                            <div class="item-input">
+                                                <label class="label-switch">
+                                                    <input asp-for="IsEnable" asp-format="checkbox" id="isEnable">
+                                                    <div class="checkbox"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>当前企业：</span>
+                    <span id="corpName"></span>
+                </div>
+                <div class="card-footer">
+                    <input type="submit" href="#" class="button button-big button-fill button-success" value="提交">
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <footer>
+        <nav class="bar bar-tab">
+            <a class="tab-item external active" href="#">
+                <span class="icon icon-message"></span>
+                <span class="tab-label">提醒</span>
+            </a>
+            <a class="tab-item" href="#" id="tongji1">
+                <span class="icon icon-card"></span>
+                <span class="tab-label">统计</span>
+            </a>
+            <a class="tab-item open-panel" href="#" data-panel='#panel-right-demo' id="panel-setting">
+                <span class="icon icon-settings"></span>
+                <span class="tab-label">设置</span>
+            </a>
+        </nav>
+    </footer>
+</div>
+<div class="panel-overlay"></div>
+<!-- Left Panel with Reveal effect -->
+<div class="panel panel-right panel-reveal theme-dark" id='panel-right-demo'>
+    <div class="list-block">
+        <ul>
+            <li>
+                <a href="#" class="item-content my-btn1">
+                    <div class="item-inner">
+                        <div class="item-title">每日一句</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title">帮助文章</div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

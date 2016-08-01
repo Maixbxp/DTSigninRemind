@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_LayoutDT";
+}
+<script>
+    dd.config({
+        agentId: '@ViewData["agentId"]',
+        corpId: '@ViewData["corpId"]',
+        timeStamp: '@ViewData["timeStamp"]',
+        nonceStr: '@ViewData["nonceStr"]',
+        signature: '@ViewData["signature"]',
+        jsApiList: ['runtime.info',
+    'device.notification.confirm',
+    'device.notification.alert',
+    'biz.navigation.close',
+    'biz.navigation.setRight',
+    'biz.navigation.setMenu',
+    'dd.biz.navigation.setTitle'
+        ]
+    });
+
+    dd.ready(function () {
+
+        //设置导航栏标题
+        dd.biz.navigation.setTitle({
+            title: '签到提醒',
+            onSuccess: function (result) {
+            },
+            onFail: function (err) { }
+        });
+        dd.device.notification.alert({
+            message: "提交成功",
+            title: "提示",//可传空
+            buttonName: "确定",
+            onSuccess: function () {
+                //onSuccess将在点击button之后回调
+                /*回调*/
+                // history.go(-1);
+                dd.biz.navigation.close({
+                    onSuccess: function (result) {
+                        /*result结构
+                         {}
+                         */
+                    }
+
+                });
+            },
+            onFail: function (err) { }
+        });
+
+
+    });
+
+    dd.error(function (err) {
+
+    });
+</script>

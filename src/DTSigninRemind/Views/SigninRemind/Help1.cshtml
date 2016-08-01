@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "_LayoutDT";
+}
+<div class="page" id="router3">
+    <div class="content">
+        <div class="list-block">
+            <ul>
+                @for (int i = 0; i < 20; i++)
+                {
+                    <li class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title">帮助问题一帮助问题一帮助问题一帮助问题一</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <nav class="bar bar-tab">
+            <a class="tab-item external" href="#">
+                <span class="tab-label">还没解决您的问题？</span>
+            </a>
+            <a class="tab-item active" href="#" onclick="showtelephone();">
+                <span class="tab-label icon icon-phone">人工服务</span>
+            </a>
+        </nav>
+    </footer>
+</div>
